@@ -12,12 +12,12 @@ const LEVEL = 5;
 //attacks
 const tackle = {name: 'Tackle', power: 40, type: 'normal', cat: 'normal'}
 const scratch = {name: "Scratch", power: 40, type: 'normal', cat:'normal'}
-const tail_whip = {name : 'Tail Whip', power: 6, type: 'normal', cat: 'normal'}
+const tail_whip = {name : 'Tail Whip', power: 40, type: 'normal', cat: 'normal'}
 const ember = {name: 'Ember', power: 40, type: 'fire', cat: 'special'}
 const bubble = {name: 'Bubble', power: 40, type: 'water', cat: 'special'}
-const vine_whip = {name: 'Vine Whip', power: 45, type: 'grass', cat: 'special'}
+const vine_whip = {name: 'Vine Whip', power: 40, type: 'grass', cat: 'special'}
 const thunder_shock = {name: 'Thunder Shock', power: 40, type: 'electric', cat: 'special'}
-const bone_club = {name: 'Bone Club', power: 65, type: 'ground', cat: 'special'}
+const bone_club = {name: 'Bone Club', power: 40, type: 'ground', cat: 'special'}
 
 const Charmander = {
 	name: 'Charmander',
@@ -183,9 +183,13 @@ function playGame(){
 			defender = player2;
 		}
 	}
-	return (player1.length === 0) ? 'Blue wins!' : 'Red wins!'
+	return (player1.length === 0) ? 0 : 1
 }
 
-console.log(playGame());
+function announceWinner(result){
+	return (result) ? 'Red wins!' : 'Blue wins!'
+}
+
+console.log(announceWinner(playGame()));
 
 
