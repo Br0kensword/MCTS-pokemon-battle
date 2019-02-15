@@ -1,5 +1,5 @@
-//pokemon types
-const types = ['fire', 'grass', 'water', 'electric', 'ground']
+import { Pokemon, types, pokemonList } from './pokemon';
+
 
 
 //constants for damage calculation
@@ -9,77 +9,6 @@ const CRITMIN = 0;
 const CRITMAX = 255;
 const LEVEL = 5;
 
-//attacks
-const tackle = {name: 'Tackle', power: 40, type: 'normal', cat: 'normal'}
-const scratch = {name: "Scratch", power: 40, type: 'normal', cat:'normal'}
-const tail_whip = {name : 'Tail Whip', power: 40, type: 'normal', cat: 'normal'}
-const ember = {name: 'Ember', power: 40, type: 'fire', cat: 'special'}
-const bubble = {name: 'Bubble', power: 40, type: 'water', cat: 'special'}
-const vine_whip = {name: 'Vine Whip', power: 40, type: 'grass', cat: 'special'}
-const thunder_shock = {name: 'Thunder Shock', power: 40, type: 'electric', cat: 'special'}
-const bone_club = {name: 'Bone Club', power: 40, type: 'ground', cat: 'special'}
-
-const Charmander = {
-	name: 'Charmander',
-	hp: 39,
-	type: types[0],
-	attack: 52,
-	defense: 43,
-	sp_atk: 60,
-	sp_def: 50,
-	speed: 65,
-	actions: [scratch, ember]
-}
-
-const Squirtle = {
-	name: 'Squirtle',
-	hp: 44,
-	type: types[2],
-	attack: 48,
-	defense: 65,
-	sp_atk: 50,
-	sp_def: 64,
-	speed: 43,
-	actions: [tackle, bubble]
-}
-
-const Bulbasaur = {
-	name: 'Bulbasaur',
-	hp: 45,
-	type: types[1],
-	attack: 49,
-	defense: 49,
-	sp_atk: 65,
-	sp_def: 65,
-	speed: 45,
-	actions: [tackle, vine_whip]
-}
-
-const Pikachu = {
-	name: 'Pikachu',
-	hp: 35,
-	type: types[3],
-	attack: 55,
-	defense: 30,
-	sp_atk: 50,
-	sp_def: 40,
-	speed: 90,
-	actions: [tackle, thunder_shock]
-}
-
-const Cubone = {
-	name: 'Cubone',
-	hp: 50,
-	type: types[4],
-	attack: 50,
-	defense: 95,
-	sp_atk: 40,
-	sp_def: 50,
-	speed: 35,
-	actions:[tackle, bone_club]
-}
-
-const pokemonList = [Charmander, Squirtle, Bulbasaur, Pikachu, Cubone];
 
 function calculateTypeBonus(attacker, defender){
 	let bonusMatrix = [[1,2,0.5,1,1],
@@ -132,7 +61,7 @@ function selectAction(pokemon){
 }
 
 function selectRandomPokemon(pokemonList){
-	return pokemonList[Math.floor(Math.random() * pokemonList.length)];
+	return new Pokemon(pokemonList[Math.floor(Math.random() * pokemonList.length)]);
 }
 
 function broadcast(action, attacker, defender){
@@ -140,56 +69,56 @@ function broadcast(action, attacker, defender){
 	return
 }
 
-let player1 = [selectRandomPokemon(pokemonList)];
-let player2 = [selectRandomPokemon(pokemonList)];
+let player1 = {
+	name: 'Red',
+	pokemon: [selectRandomPokemon(pokemonList)],
+	strategy: selectAction			
+};
+let player2 = {
+	name: 'Blue',
+	pokemon: [selectRandomPokemon(pokemonList)],
+	strategy: selectAction
+};
 
 
-function playGame(){
-	console.log(`Red uses ${player1[0].name} \nBlue uses ${player2[0].name} \n`);
+console.log(`Red uses ${player1.pokemon[0].name} \nBlue uses ${player2.pokemon[0].name} \n`);
 
-	let attacker;
-	let defender;
 
-	if(player1[0].speed > player2[0].speed){
-		attacker = player1;
-		defender = player2;
-	}
-	else {
-		attacker = player2;
-		defender = player1;
-	}
-
-	while(player1.length != 0 && player2.length != 0){
-		let action = selectAction(attacker[0]);
-
-		broadcast(action, attacker[0], defender[0]);
-
-		let damage = calculateDamage(action, attacker[0], defender[0]);
-
-		console.log(`it did ${damage} damage to ${defender[0].name}`, '\n');
-
-		defender[0].hp = defender[0].hp - damage;
-
-		console.log(`${player1[0].name} hp: ${player1[0].hp} , ${player2[0].name} hp: ${player2[0].hp} \n`)
-
-		if(checkForKO(defender[0])) defender.pop();
-
-		if(attacker === player1){
-			attacker = player2;
-			defender = player1;
-		}
-		else{
-			attacker = player1;
-			defender = player2;
-		}
-	}
-	return (player1.length === 0) ? 0 : 1
+function setInitative(player1, player2){
+	return (player1.pokemon[0].speed > player2.pokemon[0].speed) ? [player1, player2] : [player2, player1];
 }
 
-function announceWinner(result){
-	return (result) ? 'Red wins!' : 'Blue wins!'
+function game(attacker, defender){
+	while(attacker.pokemon.length != 0 && defender.pokemon.length != 0){
+		let action = attacker.strategy(attacker.pokemon[0]);
+
+		broadcast(action, attacker.pokemon[0], defender.pokemon[0]);
+
+		let damage = calculateDamage(action, attacker.pokemon[0], defender.pokemon[0]);
+
+		console.log(`it did ${damage} damage to ${defender.pokemon[0].name}`, '\n');
+
+		defender.pokemon[0].hp = defender.pokemon[0].hp - damage;
+
+		console.log(`${attacker.pokemon[0].name} hp: ${attacker.pokemon[0].hp} , ${defender.pokemon[0].name} hp: ${defender.pokemon[0].hp} \n`)
+
+		if(checkForKO(defender.pokemon[0])) defender.pokemon.pop();
+
+		let temp = attacker;
+		attacker = defender
+		defender = temp;
+
+	}
+	return (attacker.pokemon.length === 0) ? attacker : defender
 }
 
-console.log(announceWinner(playGame()));
+function announceWinner(winner){
+	return `${winner.name} wins!!!`;
+}
+
+
+let playerOrder = setInitative(player1, player2);
+
+console.log(announceWinner(game(playerOrder[0], playerOrder[1])));
 
 

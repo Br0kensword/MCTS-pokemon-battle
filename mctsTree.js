@@ -59,3 +59,11 @@ function selectAction(actions){
 function rollOut(player1, player2, game){
 	
 }
+
+function think(player1, player2, game){
+	let rootNode = new MCTSNode(null, null, player1.pokemon[0].actions);
+
+	for(let i = 0; i < 50; i++){
+		
+	}
+}
