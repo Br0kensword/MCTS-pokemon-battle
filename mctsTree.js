@@ -33,7 +33,6 @@ function expandTree(node, moveList){
 	if(node.untriedActions === 0) return node;
 
 	let action = node.untriedActions.pop();
-	//apply action
 	let newNode = new MCTSNode(parent = node, parentAction = action, actionList = moveList);
 
 	return newNode;
@@ -46,7 +45,6 @@ function backPropagate(node, result){
 		node.wins = node.wins + result;
 		node = node.parent;
 	}
-
 	node.visits++;
 	node.wins = node.wins + result;
 	return;
@@ -57,13 +55,20 @@ function selectAction(actions){
 }
 
 function rollOut(player1, player2, game){
-	
+	const winner = game(player1, player2);
+	return (winner.name === "Blue") ?  1 : -1 
 }
 
-function think(player1, player2, game){
+export function think(player1, player2, game){
+	player1.strategy = selectAction;
 	let rootNode = new MCTSNode(null, null, player1.pokemon[0].actions);
 
-	for(let i = 0; i < 50; i++){
+	for(let i = 0; i < 20; i++){
 		
+	    let	node = traverseNodes(rootNode);
+	    let result = rollOut(player1, player2, game);
+	    backPropagate(node, result);
 	}
+
+	return rootNode.childNodes.reduce((acc, node) => { (max.wins / max.visits) > (node.wins / node.visits) ? max : game });
 }

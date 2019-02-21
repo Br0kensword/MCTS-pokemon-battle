@@ -10,17 +10,17 @@ class MCTSNode {
 		this.visits = 0;
 	}
 
-	winRate() => {
+	winRate(){
 		return 100 * (this.wins / this.visits);
 	}
 
-	treeToString(horizion=1, indent=0) => {
+	treeToString(horizion=1, indent=0){
 		let tree = "";
-		for(let i = 0; i < indent, i++){
+		for(let i = 0; i < indent; i++){
 			tree = tree + '| ' + this.winRate();
 		}
 		if(horizion > 0){
-			childNodes.forEach( node => return tree = tree +  treeToString(horizion - 1, indent + 1))
+			childNodes.forEach( node => {return tree = tree +  treeToString(horizion - 1, indent + 1)} )
 		}
 		return tree;
 	}

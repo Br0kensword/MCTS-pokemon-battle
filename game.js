@@ -1,6 +1,5 @@
 import { Pokemon, types, pokemonList } from './pokemon';
-
-
+import think from './mctsTree';
 
 //constants for damage calculation
 const RANDOMMIN = 0.85;
@@ -56,9 +55,13 @@ function checkForKO(pokemon){
 	return (pokemon.hp <= 0) ? true : false;
 }
 
-function selectAction(pokemon){
+function randomAction(pokemon){
 	return pokemon.actions[Math.floor(Math.random() * pokemon.actions.length)];
 }
+
+function 
+
+function 
 
 function selectRandomPokemon(pokemonList){
 	return new Pokemon(pokemonList[Math.floor(Math.random() * pokemonList.length)]);
@@ -72,12 +75,12 @@ function broadcast(action, attacker, defender){
 let player1 = {
 	name: 'Red',
 	pokemon: [selectRandomPokemon(pokemonList)],
-	strategy: selectAction			
+	strategy: randomAction			
 };
 let player2 = {
 	name: 'Blue',
 	pokemon: [selectRandomPokemon(pokemonList)],
-	strategy: selectAction
+	strategy: randomAction
 };
 
 
@@ -90,7 +93,7 @@ function setInitative(player1, player2){
 
 function game(attacker, defender){
 	while(attacker.pokemon.length != 0 && defender.pokemon.length != 0){
-		let action = attacker.strategy(attacker.pokemon[0]);
+		action = attacker.strategy(attacker.pokemon[0]);
 
 		broadcast(action, attacker.pokemon[0], defender.pokemon[0]);
 
